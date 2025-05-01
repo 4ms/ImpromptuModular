@@ -1181,8 +1181,14 @@ struct ClockedWidget : ModuleWidget {
 		displayRatios[0]->box.pos = VecPx(col4 + 26.5f, row0).minus(displayRatios[0]->box.size.div(2));
 		displayRatios[0]->module = module;
 		displayRatios[0]->knobIndex = 0;
+#ifdef METAMODULE
+		// On MM add background first to draw it on bottom
+		addChild(new DisplayBackground(displayRatios[0]->box.pos, displayRatios[0]->box.size, mode));
+		addChild(displayRatios[0]);
+#else
 		addChild(displayRatios[0]);
 		svgPanel->fb->addChild(new DisplayBackground(displayRatios[0]->box.pos, displayRatios[0]->box.size, mode));
+#endif
 		
 		// Row 1
 		// Reset LED bezel and light
@@ -1214,8 +1220,14 @@ struct ClockedWidget : ModuleWidget {
 			displayRatios[i + 1]->box.pos = VecPx(colM1 + 15.4f, row2 + i * rowSpacingClks).minus(displayRatios[i + 1]->box.size.div(2));
 			displayRatios[i + 1]->module = module;
 			displayRatios[i + 1]->knobIndex = i + 1;
+#ifdef METAMODULE
+			// On MM add background first to draw it on bottom
+			addChild(new DisplayBackground(displayRatios[i + 1]->box.pos, displayRatios[i + 1]->box.size, mode));
+			addChild(displayRatios[i + 1]);
+#else
 			addChild(displayRatios[i + 1]);
 			svgPanel->fb->addChild(new DisplayBackground(displayRatios[i + 1]->box.pos, displayRatios[i + 1]->box.size, mode));
+#endif
 			// Sync light
 			addChild(createLightCentered<SmallLight<RedLightIM>>(VecPx(colM1 + 54, row2 + i * rowSpacingClks), module, Clocked::CLK_LIGHTS + i + 1));		
 			// Swing knobs
