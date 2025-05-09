@@ -30,16 +30,12 @@ void init(Plugin *p) {
 	p->addModel(modelBigButtonSeq);
 	p->addModel(modelBigButtonSeq2);
 	p->addModel(modelChordKey);
-	p->addModel(modelChordKeyExpander);
 	p->addModel(modelClocked);
-	p->addModel(modelClockedExpander);
 	p->addModel(modelClkd);
 	p->addModel(modelCvPad);
 	p->addModel(modelFoundry);
-	p->addModel(modelFoundryExpander);
 	p->addModel(modelFourView);
 	p->addModel(modelGateSeq64);
-	p->addModel(modelGateSeq64Expander);
 	p->addModel(modelHotkey);
 	p->addModel(modelNoteEcho);
 	p->addModel(modelNoteFilter);
@@ -47,7 +43,6 @@ void init(Plugin *p) {
 	p->addModel(modelPart);
 	p->addModel(modelPhraseSeq16);
 	p->addModel(modelPhraseSeq32);
-	p->addModel(modelPhraseSeqExpander);
 	p->addModel(modelProbKey);
 	p->addModel(modelSygen);
 	p->addModel(modelTact);
@@ -57,7 +52,14 @@ void init(Plugin *p) {
 	p->addModel(modelVariations);
 	p->addModel(modelWriteSeq32);
 	p->addModel(modelWriteSeq64);
+#ifndef METAMODULE
 	p->addModel(modelBlankPanel);
+	p->addModel(modelChordKeyExpander);
+	p->addModel(modelClockedExpander);
+	p->addModel(modelFoundryExpander);
+	p->addModel(modelGateSeq64Expander);
+	p->addModel(modelPhraseSeqExpander);
+#endif
 }
 
 
