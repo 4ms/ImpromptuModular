@@ -518,6 +518,7 @@ struct CvPadWidget : ModuleWidget {
 		}
 
 		void onSelectKey(const event::SelectKey& e) override {
+#if !defined(METAMODULE)
 			if (e.action == GLFW_PRESS && (e.key == GLFW_KEY_ENTER || e.key == GLFW_KEY_KP_ENTER)) {
 				float v = 0.f;
 				if (std::sscanf(text.c_str(), "%f", &v) >= 1) {
@@ -531,6 +532,7 @@ struct CvPadWidget : ModuleWidget {
 
 			if (!e.getTarget())
 				TextField::onSelectKey(e);
+#endif
 		}
 	};
 	
