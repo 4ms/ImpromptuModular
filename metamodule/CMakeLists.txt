@@ -21,8 +21,6 @@ add_library(Impromptu STATIC)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
-file(GLOB SOURCES ${SOURCE_DIR}/src/*.cpp)
-
 target_sources(Impromptu
     PRIVATE
     ${SOURCE_DIR}/src/comp/Components.cpp
@@ -30,7 +28,41 @@ target_sources(Impromptu
     ${SOURCE_DIR}/src/comp/PianoKey.cpp
     ${SOURCE_DIR}/src/comp/TactPad.cpp
 
-	${SOURCES}
+    ${SOURCE_DIR}/src/AdaptiveQuantizer.cpp
+    ${SOURCE_DIR}/src/BigButtonSeq.cpp
+    ${SOURCE_DIR}/src/BigButtonSeq2.cpp
+    ${SOURCE_DIR}/src/ChordKey.cpp
+    ${SOURCE_DIR}/src/ChordKeyExpander.cpp
+    ${SOURCE_DIR}/src/Clkd.cpp
+    ${SOURCE_DIR}/src/Clocked.cpp
+    ${SOURCE_DIR}/src/ClockedCommon.cpp
+    ${SOURCE_DIR}/src/ClockedExpander.cpp
+    ${SOURCE_DIR}/src/CvPad.cpp
+    ${SOURCE_DIR}/src/Foundry.cpp
+    ${SOURCE_DIR}/src/FoundryExpander.cpp
+    ${SOURCE_DIR}/src/FoundrySequencer.cpp
+    ${SOURCE_DIR}/src/FoundrySequencerKernel.cpp
+    ${SOURCE_DIR}/src/FourView.cpp
+    ${SOURCE_DIR}/src/GateSeq64.cpp
+    ${SOURCE_DIR}/src/GateSeq64Expander.cpp
+    ${SOURCE_DIR}/src/Hotkey.cpp
+    ${SOURCE_DIR}/src/ImpromptuModular.cpp
+    ${SOURCE_DIR}/src/Interop.cpp
+    ${SOURCE_DIR}/src/NoteEcho.cpp
+    ${SOURCE_DIR}/src/NoteFilter.cpp
+    ${SOURCE_DIR}/src/NoteLoop.cpp
+    ${SOURCE_DIR}/src/Part.cpp
+    ${SOURCE_DIR}/src/PhraseSeq16.cpp
+    ${SOURCE_DIR}/src/PhraseSeq32.cpp
+    ${SOURCE_DIR}/src/PhraseSeqExpander.cpp
+    ${SOURCE_DIR}/src/PhraseSeqUtil.cpp
+    ${SOURCE_DIR}/src/ProbKey.cpp
+    ${SOURCE_DIR}/src/Sygen.cpp
+    ${SOURCE_DIR}/src/Tact.cpp
+    ${SOURCE_DIR}/src/TwelveKey.cpp
+    ${SOURCE_DIR}/src/Variations.cpp
+    ${SOURCE_DIR}/src/WriteSeq32.cpp
+    ${SOURCE_DIR}/src/WriteSeq64.cpp
 )
 
 set_property(TARGET Impromptu PROPERTY CXX_STANDARD 23)
