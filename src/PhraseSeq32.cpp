@@ -252,7 +252,13 @@ struct PhraseSeq32 : Module {
 		configParam(SLIDE_BTN_PARAM, 0.0f, 1.0f, 0.0f, "CV slide");
 		configParam(SLIDE_KNOB_PARAM, 0.0f, 2.0f, 0.2f, "Slide rate");
 		configSwitch(AUTOSTEP_PARAM, 0.0f, 1.0f, 1.0f, "Autostep when write", {"No", "Yes"});
-		
+
+#ifdef METAMODULE
+		for (int i = 0; i < 12; i++) {
+			configSwitch(KEY_PARAMS + i, 0.0f, 1.0f, 0.0f, string::f("Key %i", i + 1));
+		}
+#endif
+
 		getParamQuantity(CPMODE_PARAM)->randomizeEnabled = false;		
 		getParamQuantity(CONFIG_PARAM)->randomizeEnabled = false;		
 		getParamQuantity(EDIT_PARAM)->randomizeEnabled = false;		
@@ -1170,7 +1176,20 @@ struct PhraseSeq32 : Module {
 					}
 				}
 			}
-			
+
+#ifdef METAMODULE
+			for (int i = 0; i < 12; i++) {
+				if (params[KEY_PARAMS + i].getValue() > 0.55f) {
+					pkInfo.gate = true;
+					pkInfo.key = i;
+				}
+			}
+			// If multiple keys are pressed, ignore them until the first is released
+			if (pkInfo.gate && params[KEY_PARAMS + pkInfo.key].getValue() < 0.45f) {
+				pkInfo.gate = false;
+			}
+#endif
+
 			// Keyboard buttons
 			if (keyTrigger.process(pkInfo.gate)) {
 				if (editingSequence) {
@@ -2139,12 +2158,20 @@ struct PhraseSeq32Widget : ModuleWidget {
 		
 		// Keys and Key lights
 		static const Vec keyboardPos = mm2px(Vec(18.222f, 33.303f));
+#ifdef METAMODULE
+		addChild(new KeyboardSmall(keyboardPos, mode));
+#else
 		svgPanel->fb->addChild(new KeyboardSmall(keyboardPos, mode));
-		
+#endif
+
 		static const Vec offsetLeds = Vec(PianoKeySmall::sizeX * 0.5f, PianoKeySmall::sizeY * 0.55f);
 		for (int k = 0; k < 12; k++) {
 			Vec keyPos = keyboardPos + mm2px(smaKeysPos[k]);
+#ifdef METAMODULE
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, PhraseSeq32::KEY_PARAMS + k));
+#else
 			addChild(createPianoKey<PianoKeySmall>(keyPos, k, module ? &module->pkInfo : NULL));
+#endif
 			addChild(createLightCentered<MediumLight<GreenRedLightIM>>(keyPos + offsetLeds, module, PhraseSeq32::KEY_LIGHTS + k * 2));
 		}
 

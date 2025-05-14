@@ -30,7 +30,11 @@ TWidget* createPianoKey(Vec pos, int _keyNumber, PianoKeyInfo* _pkInfo) {
 }
 
 
+#ifdef METAMODULE
+struct PianoKey : ParamWidget {
+#else
 struct PianoKey : OpaqueWidget {
+#endif
 	int keyNumber = 0;
 	bool isBlackKey = false;
 	PianoKeyInfo *pkInfo = NULL;
