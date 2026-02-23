@@ -18,6 +18,9 @@ struct TwelveKey : Module {
 		OCTDEC_PARAM,
 		MAXVEL_PARAM,
 		VELPOL_PARAM,
+#if defined(METAMODULE)
+		ENUMS(KEY_PARAMS, 12),
+#endif
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -90,6 +93,11 @@ struct TwelveKey : Module {
 		configParam(OCTINC_PARAM, 0.0, 1.0, 0.0, "Oct up");
 		configParam(MAXVEL_PARAM, 0.0, 1.0, 0.0, "Max velocity");
 		configSwitch(VELPOL_PARAM, 0.0, 1.0, 0.0, "Velocity polarity", {"Unipolar", "Bipolar"});
+#if defined(METAMODULE)
+		for (int i = 0; i < 12; i++) {
+			configButton(KEY_PARAMS + i, string::f("Key %i", i + 1));
+		}
+#endif
 		
 		getParamQuantity(VELPOL_PARAM)->randomizeEnabled = false;		
 
@@ -285,6 +293,9 @@ struct TwelveKey : Module {
 			pkInfo.showMarks = outputs[VEL_OUTPUT].isConnected() ? 2 : 0;
 		}// userInputs refresh
 
+#if defined(METAMODULE)
+		updateKeyParams(&pkInfo, params, (int)KEY_PARAMS);
+#endif
 
 		// Keyboard buttons and gate input (don't put in refresh scope or else trigger will go out to next module before cv and cv)
 		if (keyTrigger.process(pkInfo.gate)) {
@@ -511,7 +522,12 @@ struct TwelveKeyWidget : ModuleWidget {
 		static const Vec offsetLeds = Vec(PianoKeyBig::sizeX * 0.5f, PianoKeyBig::sizeY * 0.667f);
 		for (int k = 0; k < 12; k++) {
 			Vec keyPos = keyboardPos + mm2px(bigKeysPos[k]);
+#if defined(METAMODULE)
+			// addParam(createParam<PianoKeyInvisible>(keyPos + Vec{12, 20}, module, TwelveKey::KEY_PARAMS + k));
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, TwelveKey::KEY_PARAMS + k));
+#else
 			addChild(createPianoKey<PianoKeyBig>(keyPos, k, module ? &module->pkInfo : NULL));
+#endif
 			addChild(createLightCentered<MediumLight<GreenLightIM>>(keyPos + offsetLeds, module, TwelveKey::KEY_LIGHTS + k));
 		}
 

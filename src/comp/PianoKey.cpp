@@ -85,3 +85,24 @@ void PianoKeyWithVel::onDragMove(const event::DragMove &e) {
 	}
 	e.consume(this);
 }
+
+#if defined(METAMODULE)
+void updateKeyParams(PianoKeyInfo *pkInfo, std::vector<rack::engine::Param> const &params, int first_key_param_idx) {
+		bool some_key_is_pressed = false;
+
+		for (int i = 0; i < 12; i++) {
+			if (params[i + first_key_param_idx].getValue() > 0.5) {
+				some_key_is_pressed = true;
+
+				pkInfo->gate = true;
+				pkInfo->key = i;
+				pkInfo->isRightClick = false;
+			}
+		}
+
+		if (!some_key_is_pressed) {
+			pkInfo->gate = false;
+		}
+
+}
+#endif

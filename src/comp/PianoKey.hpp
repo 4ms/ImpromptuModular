@@ -71,3 +71,7 @@ struct PianoKeySmall : PianoKey {
 		box.size = VecPx(sizeX, sizeY);
 	}
 };
+
+#if defined(METAMODULE)
+void updateKeyParams(PianoKeyInfo *pkInfo, std::vector<rack::engine::Param> const &params, int key_param_idx);
+#endif
