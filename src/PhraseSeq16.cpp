@@ -227,7 +227,7 @@ struct PhraseSeq16 : Module {
 
 #ifdef METAMODULE
 		for (int i = 0; i < 12; i++) {
-			configSwitch(KEY_PARAMS + i, 0.0f, 1.0f, 0.0f, string::f("Key %i", i + 1));
+			configButton(KEY_PARAMS + i, string::f("Key %i", i + 1));
 		}
 #endif
 
@@ -1153,16 +1153,7 @@ struct PhraseSeq16 : Module {
 			}
 			
 #ifdef METAMODULE
-			for (int i = 0; i < 12; i++) {
-				if (params[KEY_PARAMS + i].getValue() > 0.55f) {
-					pkInfo.gate = true;
-					pkInfo.key = i;
-				}
-			}
-			// If multiple keys are pressed, ignore them until the first is released
-			if (pkInfo.gate && params[KEY_PARAMS + pkInfo.key].getValue() < 0.45f) {
-				pkInfo.gate = false;
-			}
+			updateKeyParams(&pkInfo, params, (int)KEY_PARAMS);
 #endif
 
 			// Keyboard buttons
@@ -2057,11 +2048,7 @@ struct PhraseSeq16Widget : ModuleWidget {
 		
 		// Keys and Key lights
 		static const Vec keyboardPos = mm2px(Vec(18.222f, 33.303f));
-#ifdef METAMODULE
-		addChild(new KeyboardSmall(keyboardPos, mode));
-#else
 		svgPanel->fb->addChild(new KeyboardSmall(keyboardPos, mode));
-#endif
 		
 		static const Vec offsetLeds = Vec(PianoKeySmall::sizeX * 0.5f, PianoKeySmall::sizeY * 0.55f);
 		for (int k = 0; k < 12; k++) {
