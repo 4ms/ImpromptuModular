@@ -29,7 +29,7 @@ void loadThemeAndContrastFromDefault(int* panelTheme, float* panelContrast);
 
 void createPanelThemeMenu(ui::Menu* menu, int* panelTheme, float* panelContrast, SvgPanel* mainPanel);
 
-
+namespace ImpromptuM {
 struct PanelBaseWidget : TransparentWidget {
 	float* panelContrastSrc = NULL;
 	PanelBaseWidget(Vec _size, float* _panelContrastSrc) {
@@ -56,5 +56,6 @@ struct InverterWidget : TransparentWidget {
     void step() override;
 	void draw(const DrawArgs& args) override;
 };
+}
 
-
+using namespace ImpromptuM;
