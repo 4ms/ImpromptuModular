@@ -115,10 +115,10 @@ struct ChordKey : Module {
 		configParam(TRANSPOSEDOWN_PARAM, 0.0f, 1.0f, 0.0f, "Transpose down");
 #if defined(METAMODULE)
 		for (int i = 0; i < 12; i++) {
-			configButton(KEY_PARAMS + i * 4 + 0, string::f("Note 1 Key %i", i * 4 + 1));
-			configButton(KEY_PARAMS + i * 4 + 1, string::f("Note 2 Key %i", i * 4 + 2));
-			configButton(KEY_PARAMS + i * 4 + 2, string::f("Note 3 Key %i", i * 4 + 3));
-			configButton(KEY_PARAMS + i * 4 + 3, string::f("Note 4 Key %i", i * 4 + 4));
+			configButton(KEY_PARAMS + (i * 4) + 0, string::f("Key %i Note 1", i + 1));
+			configButton(KEY_PARAMS + (i * 4) + 1, string::f("Key %i Note 2", i + 1));
+			configButton(KEY_PARAMS + (i * 4) + 2, string::f("Key %i Note 3", i + 1));
+			configButton(KEY_PARAMS + (i * 4) + 3, string::f("Key %i Note 4", i + 1));
 		}
 #endif
 		
@@ -874,19 +874,19 @@ struct ChordKeyWidget : ModuleWidget {
 			offsetLeds.y = PianoKeyBig::sizeY * 3.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<OrangeLightIM>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 1));
 #if defined(METAMODULE)
-			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 0));
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 1));
 #endif
 
 			offsetLeds.y = PianoKeyBig::sizeY * 5.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<YellowLight>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 2));
 #if defined(METAMODULE)
-			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 0));
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 2));
 #endif
 
 			offsetLeds.y = PianoKeyBig::sizeY * 7.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<GreenLightIM>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 3));
 #if defined(METAMODULE)
-			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 0));
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY_PARAMS + k * 4 + 3));
 #endif
 		
 		}
