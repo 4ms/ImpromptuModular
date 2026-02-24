@@ -21,6 +21,12 @@ struct ChordKey : Module {
 		FORCE_PARAM,
 		TRANSPOSEUP_PARAM,
 		TRANSPOSEDOWN_PARAM,
+#if defined(METAMODULE)
+		ENUMS(KEY4_PARAMS, 12),
+		ENUMS(KEY3_PARAMS, 12),
+		ENUMS(KEY2_PARAMS, 12),
+		ENUMS(KEY1_PARAMS, 12),
+#endif
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -110,6 +116,14 @@ struct ChordKey : Module {
 		configSwitch(FORCE_PARAM, 0.0f, 1.0f, 0.0f, "Force gate on", {"No", "Yes"});
 		configParam(TRANSPOSEUP_PARAM, 0.0f, 1.0f, 0.0f, "Transpose up");
 		configParam(TRANSPOSEDOWN_PARAM, 0.0f, 1.0f, 0.0f, "Transpose down");
+#if defined(METAMODULE)
+		for (int i = 0; i < 12; i++) {
+			configButton(KEY1_PARAMS + i, string::f("Note 1 Key %i", i + 1));
+			configButton(KEY2_PARAMS + i, string::f("Note 2 Key %i", i + 1));
+			configButton(KEY3_PARAMS + i, string::f("Note 3 Key %i", i + 1));
+			configButton(KEY4_PARAMS + i, string::f("Note 4 Key %i", i + 1));
+		}
+#endif
 		
 		getParamQuantity(INDEX_PARAM)->randomizeEnabled = false;		
 		
@@ -415,6 +429,10 @@ struct ChordKey : Module {
 				}				
 			}
 			
+
+#if defined(METAMODULE)
+			updateKeyParams(&pkInfo, {params.begin() + KEY4_PARAMS, 48});
+#endif
 			// piano keys
 			if (keyTrigger.process(pkInfo.gate)) {
 				int cni = clamp((int)(pkInfo.vel * 4.0f), 0, 3);
@@ -846,16 +864,34 @@ struct ChordKeyWidget : ModuleWidget {
 
 		for (int k = 0; k < 12; k++) {
 			Vec keyPos = keyboardPos + mm2px(bigKeysPos[k]);
+
+#if !defined(METAMODULE)
 			addChild(createPianoKey<PianoKeyBig>(keyPos, k, module ? &module->pkInfo : NULL));
+#endif
 			
 			Vec offsetLeds = Vec(PianoKeyBig::sizeX * 0.5f, PianoKeyBig::sizeY * 1.0f / 8.0f);
 			addChild(createLightCentered<SmallLight<RedLightIM>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 0));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY1_PARAMS + k));
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 3.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<OrangeLightIM>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 1));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY2_PARAMS + k));
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 5.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<YellowLight>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 2));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY3_PARAMS + k));
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 7.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<GreenLightIM>>(keyPos + offsetLeds, module, ChordKey::KEY_LIGHTS + k * 4 + 3));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ChordKey::KEY4_PARAMS + k));
+#endif
 		
 		}
 

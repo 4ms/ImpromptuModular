@@ -294,7 +294,7 @@ struct TwelveKey : Module {
 		}// userInputs refresh
 
 #if defined(METAMODULE)
-		updateKeyParams(&pkInfo, params, (int)KEY_PARAMS);
+		updateKeyParams(&pkInfo, {params.begin() + KEY_PARAMS, 12});
 #endif
 
 		// Keyboard buttons and gate input (don't put in refresh scope or else trigger will go out to next module before cv and cv)
@@ -523,7 +523,6 @@ struct TwelveKeyWidget : ModuleWidget {
 		for (int k = 0; k < 12; k++) {
 			Vec keyPos = keyboardPos + mm2px(bigKeysPos[k]);
 #if defined(METAMODULE)
-			// addParam(createParam<PianoKeyInvisible>(keyPos + Vec{12, 20}, module, TwelveKey::KEY_PARAMS + k));
 			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, TwelveKey::KEY_PARAMS + k));
 #else
 			addChild(createPianoKey<PianoKeyBig>(keyPos, k, module ? &module->pkInfo : NULL));

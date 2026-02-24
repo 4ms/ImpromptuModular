@@ -73,5 +73,5 @@ struct PianoKeySmall : PianoKey {
 };
 
 #if defined(METAMODULE)
-void updateKeyParams(PianoKeyInfo *pkInfo, std::vector<rack::engine::Param> const &params, int key_param_idx);
+void updateKeyParams(PianoKeyInfo *pkInfo, std::span<const rack::engine::Param> params);
 #endif

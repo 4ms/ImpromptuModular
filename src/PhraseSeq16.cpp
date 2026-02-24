@@ -1153,7 +1153,7 @@ struct PhraseSeq16 : Module {
 			}
 			
 #ifdef METAMODULE
-			updateKeyParams(&pkInfo, params, (int)KEY_PARAMS);
+			updateKeyParams(&pkInfo, {params.begin() + KEY_PARAMS, 12});
 #endif
 
 			// Keyboard buttons
