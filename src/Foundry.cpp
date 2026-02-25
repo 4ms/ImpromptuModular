@@ -27,7 +27,7 @@ struct Foundry : Module {
 		GATE_PARAM,
 		SLIDE_BTN_PARAM,
 		AUTOSTEP_PARAM,
-		ENUMS(KEY_PARAMS, 12),// no longer used
+		ENUMS(KEY_PARAMS, 12),// no longer used, except by METAMODULE
 		MODE_PARAM,
 		CLKRES_PARAM,
 		TRAN_ROT_PARAM,
@@ -247,6 +247,12 @@ struct Foundry : Module {
 			configOutput(VEL_OUTPUTS + i, string::f("Track %c CV2", i + 'A'));
 			configOutput(GATE_OUTPUTS + i, string::f("Track %c gate", i + 'A'));
 		}
+
+#ifdef METAMODULE
+		for (int i = 0; i < 12; i++) {
+			configButton(KEY_PARAMS + i, string::f("Key %i", i + 1));
+		}
+#endif
 		
 		onReset();
 		
@@ -976,6 +982,10 @@ struct Foundry : Module {
 					}
 				}
 			}
+
+#ifdef METAMODULE
+			updateKeyParams(&pkInfo, {params.begin() + KEY_PARAMS, 12});
+#endif
 			
 			// Keyboard buttons
 			if (keyTrigger.process(pkInfo.gate)) {
@@ -2134,7 +2144,11 @@ struct FoundryWidget : ModuleWidget {
 		static const Vec offsetLeds = Vec(PianoKeySmall::sizeX * 0.5f, PianoKeySmall::sizeY * 0.55f);
 		for (int k = 0; k < 12; k++) {
 			Vec keyPos = keyboardPos + mm2px(smaKeysPos[k]);
+#ifdef METAMODULE
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, Foundry::KEY_PARAMS + k));
+#else
 			addChild(createPianoKey<PianoKeySmall>(keyPos, k, module ? &module->pkInfo : NULL));
+#endif
 			addChild(createLightCentered<MediumLight<GreenRedLightIM>>(keyPos + offsetLeds, module, Foundry::KEY_LIGHTS + k * 2));
 		}
 
