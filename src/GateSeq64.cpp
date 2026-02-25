@@ -1084,8 +1084,14 @@ struct GateSeq64 : Module {
 								if (attributes[phrase[phraseIndexRun]][i].getGateP())
 									white = 0.14f;
 							}
+#if defined(METAMODULE)
+							lights[STEP_LIGHTS + i * 3 + 0].setBrightness(white > 0 ? white : red);
+							lights[STEP_LIGHTS + i * 3 + 1].setBrightness(white > 0 ? white : std::min(green, 1.0f));
+							lights[STEP_LIGHTS + i * 3 + 2].setBrightness(white > 0 ? white : 0);
+#else
 							setGreenRed(STEP_LIGHTS + i * 3, std::min(green, 1.0f), red);
 							lights[STEP_LIGHTS + i * 3 + 2].setBrightness(white);
+#endif
 						}				
 					}
 				}
@@ -1173,7 +1179,11 @@ struct GateSeq64 : Module {
 		lights[id + 1].setBrightness(red);
 	}
 	inline void setGreenRed3(int id, float green, float red) {
+#if defined(METAMODULE)
+		setGreenRed(id, red, green);
+#else
 		setGreenRed(id, green, red);
+#endif
 		lights[id + 2].setBrightness(0.0f);
 	}
 

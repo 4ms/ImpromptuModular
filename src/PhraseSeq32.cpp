@@ -1525,8 +1525,14 @@ struct PhraseSeq32 : Module {
 						green = 0.14f; white = 0.0f;
 					}
 				}
+#if defined(METAMODULE)
+				lights[STEP_PHRASE_LIGHTS + i * 3 + 0].setBrightness(white > 0 ? white : red);
+				lights[STEP_PHRASE_LIGHTS + i * 3 + 1].setBrightness(white > 0 ? white : green);
+				lights[STEP_PHRASE_LIGHTS + i * 3 + 2].setBrightness(white > 0 ? white : 0);
+#else
 				setGreenRed(STEP_PHRASE_LIGHTS + i * 3, green, red);
 				lights[STEP_PHRASE_LIGHTS + i * 3 + 2].setBrightness(white);
+#endif
 			}
 		
 			// Octave lights
