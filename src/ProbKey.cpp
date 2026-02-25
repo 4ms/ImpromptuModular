@@ -1222,18 +1222,38 @@ struct ProbKey : Module {
 	
 	void setKeyLightsProb(int key, float prob, bool tracer, bool tracerLockedStep) {
 		for (int j = 0; j < 4; j++) {// 0 to 3 is bottom to top
+#if defined(METAMODULE)
+			if (tracer && (j == 3)) {
+				//top light tracer: locked=red, unlocked=white (75%)
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 0].setBrightness(tracerLockedStep ? 1.f : 0.75f);
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 1].setBrightness(tracerLockedStep ? 0 : 0.75f);
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 2].setBrightness(tracerLockedStep ? 0 : 0.75f);
+			} else {
+				//prob = green
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 0].setBrightness(0.0f);
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 1].setBrightness((prob * 4.0f - (float)j));
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 2].setBrightness(0.0f);
+			}
+#else
 			lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 0].setBrightness((tracer && (j == 3)) ? 0.0f : (prob * 4.0f - (float)j));
 			lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 1].setBrightness((tracer && (j == 3) && tracerLockedStep) ? 1.0f : 0.0f);
 			lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 2].setBrightness((tracer && (j == 3) && !tracerLockedStep) ? 1.0f : 0.0f);
+#endif
 		}
 	}
 	void setKeyLightsAnchor(int key, float anch, bool active) {
 		if (active) {
 			anch = ProbKernel::quantizeAnchor(anch);
 			for (int j = 0; j < 4; j++) {
+#if defined(METAMODULE)
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 0].setBrightness(anch * 4.0f - (float)j);
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 1].setBrightness(0.0f);
+				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 2].setBrightness(0.0f);
+#else
 				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 0].setBrightness(0.0f);
 				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 1].setBrightness(anch * 4.0f - (float)j);
 				lights[KEY_LIGHTS + key * 4 * 3 + j * 3 + 2].setBrightness(0.0f);
+#endif
 			}
 		}
 		else {
@@ -1251,9 +1271,15 @@ struct ProbKey : Module {
 				for (int j = 0; j < 4; j++) {
 					int i7 = ProbKernel::key12to7(i);
 					float normalRange = probKernels[index].getNoteRange(i);
+#if defined(METAMODULE)
+					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 0].setBrightness(modRanges[i7] * 4.0f - (float)j);
+					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 1].setBrightness(normalRange   * 4.0f - (float)j);
+					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 2].setBrightness(0.0f);				
+#else
 					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 0].setBrightness(normalRange   * 4.0f - (float)j);
 					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 1].setBrightness(modRanges[i7] * 4.0f - (float)j);
 					lights[KEY_LIGHTS + i * 4 * 3 + j * 3 + 2].setBrightness(0.0f);				
+#endif
 				}
 			}
 			else {
