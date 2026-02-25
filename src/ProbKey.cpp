@@ -542,6 +542,9 @@ struct ProbKey : Module {
 		PASTE_PARAM,
 		TR_UP_PARAM,
 		TR_DOWN_PARAM,
+#if defined(METAMODULE)
+		ENUMS(KEY_PARAMS, 12 * 5),
+#endif
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -734,6 +737,16 @@ struct ProbKey : Module {
 		configOutput(CV_OUTPUT, "CV");
 
 		pkInfo.showMarks = 1;
+
+#if defined(METAMODULE)
+		for (int i = 0; i < 12; i++) {
+			configButton(KEY_PARAMS + (i * 5) + 4, string::f("Key %i Prob Max", i + 1));
+			configButton(KEY_PARAMS + (i * 5) + 3, string::f("Key %i Prob High", i + 1));
+			configButton(KEY_PARAMS + (i * 5) + 2, string::f("Key %i Prob Med.", i + 1));
+			configButton(KEY_PARAMS + (i * 5) + 1, string::f("Key %i Prob Low", i + 1));
+			configButton(KEY_PARAMS + (i * 5) + 0, string::f("Key %i Prob None", i + 1));
+		}
+#endif
 		
 		onReset();
 		
@@ -1066,6 +1079,9 @@ struct ProbKey : Module {
 				}
 			}
 			
+#if defined(METAMODULE)
+			updateKeyParams(&pkInfo, {params.begin() + KEY_PARAMS, 12 * 5});
+#endif
 			// piano keys if applicable 
 			if (pkInfo.gate && !pkInfo.isRightClick) {
 				bool withSymmetry = (APP->window->getMods() & RACK_MOD_MASK) == GLFW_MOD_SHIFT;
@@ -1556,12 +1572,32 @@ struct ProbKeyWidget : ModuleWidget {
 		
 			Vec offsetLeds = Vec(PianoKeyBig::sizeX * 0.5f, PianoKeyBig::sizeY * 7.0f / 8.0f);
 			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 0 * 3));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ProbKey::KEY_PARAMS + k * 5 + 1)); // Low
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 5.0f / 8.0f;
-			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 1 * 3)); \
+			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 1 * 3)); 
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ProbKey::KEY_PARAMS + k * 5 + 2)); // Med.
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 3.0f / 8.0f;
-			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 2 * 3)); \
+			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 2 * 3)); 
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ProbKey::KEY_PARAMS + k * 5 + 3)); // High
+#endif
+
 			offsetLeds.y = PianoKeyBig::sizeY * 1.0f / 8.0f;
 			addChild(createLightCentered<SmallLight<GreenRedWhiteLightIM>>(keyPos + offsetLeds, module, ProbKey::KEY_LIGHTS + k * (4 * 3) + 3 * 3));
+#if defined(METAMODULE)
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ProbKey::KEY_PARAMS + k * 5 + 4)); // Max
+
+			// Bottom param for "None"
+			offsetLeds.y = PianoKeyBig::sizeY * 8.0f / 8.0f;
+			addParam(createParamCentered<TL1105>(keyPos + offsetLeds, module, ProbKey::KEY_PARAMS + k * 5 + 0)); // None
+#endif
+
 		}
 
 		
