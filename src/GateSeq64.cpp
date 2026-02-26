@@ -822,7 +822,7 @@ struct GateSeq64 : Module {
 			}
 
 			// Prob button
-			if (probTrigger.process(params[PROB_PARAM].getValue())) {
+			if (probTrigger.process(params[PROB_PARAM].getValue() > 0.5f)) {
 				blinkNum = blinkNumInit;
 				if (editingSequence && !lock) {
 					if (attributes[sequence][stepIndexEdit].getGate()) {// gate is on and pressed gatep
