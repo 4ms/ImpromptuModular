@@ -57,6 +57,9 @@ struct AdaptiveQuantizer : Module {
 		OFFSET_LIGHT,
 		TITLE_LIGHT,
 		ENUMS(INTERVAL_LIGHT, 2),// room for yellowGreen
+#if defined(METAMODULE)
+		ENUMS(RGB_WEIGHT_LIGHTS, 12 * 5 * 3),// RGB
+#endif
 		NUM_LIGHTS
 	};
 	
@@ -1091,6 +1094,10 @@ struct AdaptiveQuantizerWidget : ModuleWidget {
 
 
 	// 4mm LED based on the component library's LEDs
+#if defined(METAMODULE)
+	template <typename TBase>
+	using MediumLargeLight = MediumLight<TBase>;
+#else
 	template <typename TBase>
 	struct MediumLargeLight : TSvgLight<TBase> {
 		MediumLargeLight() {
@@ -1099,6 +1106,7 @@ struct AdaptiveQuantizerWidget : ModuleWidget {
 		}
 		void drawHalo(const DrawArgs& args) override {};
 	};
+#endif
 
 
 	AdaptiveQuantizerWidget(AdaptiveQuantizer *module) {
@@ -1142,7 +1150,11 @@ struct AdaptiveQuantizerWidget : ModuleWidget {
 			// pitch matrix lights
 			for (int y = 0; y < 5; y++) {// light index 0 on bottom
 				int lightId = k * (5 * 1) + y * 1 + 0;
+#ifdef METAMODULE
+				addChild(pitchLightsWidgets[lightId] = createLightCentered<MediumLargeLight<PitchMatrixLight>>(mm2px(Vec(xLeftK, yPitch + dyPitch * ((5 - 1) - y))), module, AdaptiveQuantizer::RGB_WEIGHT_LIGHTS + lightId * 3));
+#else
 				addChild(pitchLightsWidgets[lightId] = createLightCentered<MediumLargeLight<PitchMatrixLight>>(mm2px(Vec(xLeftK, yPitch + dyPitch * ((5 - 1) - y))), module, AdaptiveQuantizer::WEIGHT_LIGHTS + lightId));
+#endif
 				if (module) {
 					pitchLightsWidgets[lightId]->showDataTable = &showDataTable;
 					pitchLightsWidgets[lightId]->qdist = &(module->qdist[k]);
@@ -1275,6 +1287,19 @@ struct AdaptiveQuantizerWidget : ModuleWidget {
 	void step() override {
 		if (module) {
 			AdaptiveQuantizer *module = static_cast<AdaptiveQuantizer*>(this->module);
+
+#if defined(METAMODULE)
+			static float lastOffsetKnobVal = 0;
+			static float lastPersKnobVal = 0;
+			if (std::abs(lastOffsetKnobVal - module->params[AdaptiveQuantizer::OFFSET_PARAM].getValue()) > 0.01f) {
+				lastOffsetKnobVal = module->params[AdaptiveQuantizer::OFFSET_PARAM].getValue();
+				module->infoDataTable = (long) (OffsetKnob::dataShowTime * APP->engine->getSampleRate() / RefreshCounter::displayRefreshStepSkips);
+			}
+			if (std::abs(lastPersKnobVal - module->params[AdaptiveQuantizer::PERSIST_PARAM].getValue()) > 0.01f) {
+				lastPersKnobVal = module->params[AdaptiveQuantizer::PERSIST_PARAM].getValue();
+				module->infoDataTable = (long) (PersistenceKnob::dataShowTime * APP->engine->getSampleRate() / RefreshCounter::displayRefreshStepSkips);
+			}
+#endif
 						
 			if (module->infoDataTable != 0l) {
 				// prepare data-table picture (for alternate representation i.e. data-table visual)
@@ -1340,6 +1365,12 @@ struct AdaptiveQuantizerWidget : ModuleWidget {
 				
 				showDataTable = false;
 			}
+
+#if defined(METAMODULE)
+			for (auto *pitchlight : pitchLightsWidgets) {
+				pitchlight->step();
+			}
+#endif
 		}
 
 		Widget::step();

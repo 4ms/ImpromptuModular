@@ -43,7 +43,13 @@ static const NVGcolor AQ_OTHER_CYAN = nvgRGB(10, 234, 240);// B (a less agressiv
 NVGcolor PitchColors[12] = {AQ_RED_LOW, AQ_DARK_PURPLE, AQ_YELLOW_LOW, AQ_BROWN_RED, AQ_LIGHT_CYAN, AQ_DARK_RED, AQ_BLUE, AQ_ORANGE, AQ_LIGHT_PURPLE, AQ_GREEN, AQ_DARK_BLUE, AQ_OTHER_CYAN};
 
 
-struct PitchMatrixLight : WhiteLightIM {
+#if defined(METAMODULE)
+using PitchMatrixLightBase = RedGreenBlueLight;
+#else
+using PitchMatrixLightBase = WhiteLightIM;
+#endif
+
+struct PitchMatrixLight : PitchMatrixLightBase {
 	bool* showDataTable = NULL;
 	int* qdist;
 	float* weight;
@@ -55,8 +61,10 @@ struct PitchMatrixLight : WhiteLightIM {
 	
 	void step() override {
 		if (showDataTable != NULL) {
+			float brightness = 0;
+
 			if (*showDataTable) {
-				module->lights[firstLightId].setBrightness(*datapic);
+				brightness = *datapic;
 				if (*datapic > 0.5f) {
 					baseColors[0] = SCHEME_GREEN;
 				}
@@ -67,23 +75,37 @@ struct PitchMatrixLight : WhiteLightIM {
 			else {
 				if ( ( (*route) & ( ((uint64_t)0x1) << (key * ((uint64_t)5) + y)) ) != ((uint64_t)0) ) {
 					// route
-					module->lights[firstLightId].setBrightness(1.0f);
+					brightness = 1.f;
 					baseColors[0] = SCHEME_WHITE;
 				}
 				else {
 					// weights
 					if (*thru) {
-						module->lights[firstLightId].setBrightness(0.0f);
+						brightness = 0.f;
 					}
 					else {
+#if defined(METAMODULE)
+						float val = *weight;
+#else
 						float val = (*weight * 5.0f - (float)y);
+#endif
 						module->lights[firstLightId].setBrightness(val);
 						baseColors[0] = PitchColors[eucMod(key + *qdist, 12)];
 					}
 				}
 			}
+
+#if defined(METAMODULE)
+			module->lights[firstLightId+0].setBrightness(brightness * baseColors[0].r);
+			module->lights[firstLightId+1].setBrightness(brightness * baseColors[0].g);
+			module->lights[firstLightId+2].setBrightness(brightness * baseColors[0].b);
+#else
+			module->lights[firstLightId].setBrightness(brightness);
+#endif
 		}
-		WhiteLightIM::step();
+
+		PitchMatrixLightBase::step();
+
 	}
 };
 
