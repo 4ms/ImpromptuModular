@@ -1250,9 +1250,9 @@ struct Foundry : Module {
 				}
 
 #if defined(METAMODULE)
-				lights[id + 0].setBrightness(white > 0 ? white : red);
-				lights[id + 1].setBrightness(white > 0 ? white : green);
-				lights[id + 2].setBrightness(white > 0 ? white : 0);
+				lights[stepn * 3 + 0].setBrightness(white > 0 ? white : red);
+				lights[stepn * 3 + 1].setBrightness(white > 0 ? white : green);
+				lights[stepn * 3 + 2].setBrightness(white > 0 ? white : 0);
 #else
 				setGreenRed(STEP_PHRASE_LIGHTS + stepn * 3, green, red);
 				lights[STEP_PHRASE_LIGHTS + stepn * 3 + 2].setBrightness(white);
