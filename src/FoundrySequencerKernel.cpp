@@ -404,7 +404,7 @@ int SequencerKernel::clockStep(bool editingSequence, int delayedSeqNumberRequest
 			}
 
 			// Slide
-			StepAttributes attribRun = getAttribute(editingSequence);
+			FoundryStepAttributes attribRun = getAttribute(editingSequence);
 			if (attribRun.getSlide()) {
 				slideStepsRemain = (unsigned long) (((float)clockPeriod * ppsFiltered) * ((float)attribRun.getSlideVal() / 100.0f));
 				if (slideStepsRemain != 0ul) {
@@ -491,7 +491,7 @@ void SequencerKernel::rotateSeq(int delta) {
 
 void SequencerKernel::rotateSeqByOne(int seqn, bool directionRight) {// caller sets dirty[] to 1
 	float rotCV;
-	StepAttributes rotAttributes;
+	FoundryStepAttributes rotAttributes;
 	int iStart = 0;
 	int iEnd = sequences[seqn].getLength() - 1;
 	int iRot = iStart;
@@ -564,7 +564,7 @@ void SequencerKernel::calcGateCode(bool editingSequence) {
 	//   false = last prob says turn gate off (used by current and consecutive tied steps)
 	
 	int seqn = editingSequence ? seqIndexEdit : phrases[phraseIndexRun].getSeqNum();
-	StepAttributes attribute = attributes[seqn][stepIndexRun];
+	FoundryStepAttributes attribute = attributes[seqn][stepIndexRun];
 	int ppsFiltered = getPulsesPerStep();// must use method
 	int gateType = attribute.getGateType();
 	

@@ -480,10 +480,10 @@ struct Foundry : Module {
 		// populate ioSteps array
 		for (int i = 0; i < seqLen; i++) {
 			ioSteps[i].pitch = seq.getCV(true, i);
-			StepAttributes stepAttrib = seq.getAttribute(true, i);
+			FoundryStepAttributes stepAttrib = seq.getAttribute(true, i);
 			ioSteps[i].gate = stepAttrib.getGate();
 			ioSteps[i].tied = stepAttrib.getTied();
-			ioSteps[i].vel = (float)stepAttrib.getVelocityVal() * 10.0f / (float)StepAttributes::MAX_VELOCITY;// every note has a vel in Foundry
+			ioSteps[i].vel = (float)stepAttrib.getVelocityVal() * 10.0f / (float)FoundryStepAttributes::MAX_VELOCITY;// every note has a vel in Foundry
 			ioSteps[i].prob = stepAttrib.getGateP() ? ((float)stepAttrib.getGatePVal() / (float)100.0f) : -1.0f;// negative means prob is not on for this note
 		}
 		
@@ -501,12 +501,12 @@ struct Foundry : Module {
 		for (int i = 0; i < seqLen; i++) {
 			seq.writeCV(i, ioSteps[i].pitch);
 			
- 			StepAttributes stepAttrib;
+ 			FoundryStepAttributes stepAttrib;
 			stepAttrib.init();
 			stepAttrib.setGate(ioSteps[i].gate);
 			if (ioSteps[i].vel >= 0.0f) {
-				float pValue = std::round(ioSteps[i].vel * (float)StepAttributes::MAX_VELOCITY / 10.0f);
-				stepAttrib.setVelocityVal(clamp((int)pValue, 0 , StepAttributes::MAX_VELOCITY));
+				float pValue = std::round(ioSteps[i].vel * (float)FoundryStepAttributes::MAX_VELOCITY / 10.0f);
+				stepAttrib.setVelocityVal(clamp((int)pValue, 0 , FoundryStepAttributes::MAX_VELOCITY));
 			}
 			if (ioSteps[i].prob >= 0.0f) {
 				float vValue = std::round(ioSteps[i].prob * 100.0f);
@@ -1178,7 +1178,7 @@ struct Foundry : Module {
 		// lights
 		if (refresh.processLights()) {
 			// Prepare values to visualize
-			StepAttributes attributesVisual;
+			FoundryStepAttributes attributesVisual;
 			attributesVisual.clear();
 			float cvVisual = 0.0f;
 			if (editingSequence || (attached && running)) {
@@ -1511,7 +1511,7 @@ struct FoundryWidget : ModuleWidget {
 				displayStr[1] = '.';// in case locals in printf				
 			}
 			else {
-				StepAttributes attributesVisual;
+				FoundryStepAttributes attributesVisual;
 				attributesVisual.clear();
 				bool editingSequence = module->editingSequence;
 				if (editingSequence || (module->attached && module->running)) {

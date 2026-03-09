@@ -7,7 +7,7 @@
 #include "ImpromptuModular.hpp"
 
 
-class StepAttributes {
+class FoundryStepAttributes {
 	unsigned long attributes = 0ul;
 	
 	public:
@@ -57,7 +57,7 @@ class StepAttributes {
 	void setSlideVal(int slideVal) {attributes &= ~ATT_MSK_SLIDE_VAL; attributes |= (((unsigned long)slideVal) << slideValShift);}
 	void setVelocityVal(int _velocity) {attributes &= ~ATT_MSK_VELOCITY; attributes |= (((unsigned long)_velocity) << velocityShift);}
 	void setAttribute(unsigned long _attributes) {attributes = _attributes;}
-};// class StepAttributes
+};// class FoundryStepAttributes
 
 
 //*****************************************************************************
@@ -88,7 +88,7 @@ class Phrase {
 //*****************************************************************************
 
 
-class SeqAttributes {
+class FoundrySeqAttributes {
 	unsigned long attributes = 0ul;
 	
 	public:
@@ -134,7 +134,7 @@ class SeqAttributes {
 			attributes |= SEQ_MSK_ROTSIGN;
 	}
 	void setSeqAttrib(unsigned long _attributes) {attributes = _attributes;}
-};// class SeqAttributes
+};// class FoundrySeqAttributes
 
 
 //*****************************************************************************
@@ -255,9 +255,9 @@ class SequencerKernel {
 	int songBeginIndex;
 	int songEndIndex;
 	Phrase phrases[MAX_PHRASES];// This is the song (series of phases; a phrase is a sequence number and a repetition value)	
-	SeqAttributes sequences[MAX_SEQS];
+	FoundrySeqAttributes sequences[MAX_SEQS];
 	float cv[MAX_SEQS][MAX_STEPS];// [-3.0 : 3.917].
-	StepAttributes attributes[MAX_SEQS][MAX_STEPS];
+	FoundryStepAttributes attributes[MAX_SEQS][MAX_STEPS];
 	char dirty[MAX_SEQS];
 	int seqIndexEdit;
 	
@@ -320,9 +320,9 @@ class SequencerKernel {
 			return cv[seqIndexEdit][stepn];
 		return cv[phrases[phraseIndexRun].getSeqNum()][stepn];
 	}
-	StepAttributes getAttribute(bool editingSequence) {return getAttributei(editingSequence, stepIndexRun);}
-	StepAttributes getAttribute(int stepn) {return getAttributei(true, stepn);}
-	StepAttributes getAttributei(bool editingSequence, int stepn) {
+	FoundryStepAttributes getAttribute(bool editingSequence) {return getAttributei(editingSequence, stepIndexRun);}
+	FoundryStepAttributes getAttribute(int stepn) {return getAttributei(true, stepn);}
+	FoundryStepAttributes getAttributei(bool editingSequence, int stepn) {
 		if (editingSequence)
 			return attributes[seqIndexEdit][stepn];
 		return attributes[phrases[phraseIndexRun].getSeqNum()][stepn];
@@ -430,7 +430,7 @@ class SequencerKernel {
 	float applyNewOctave(int stepn, int newOct0, int count);
 	float applyNewKey(int stepn, int newKeyIndex, int count);
 	void writeCV(int stepn, float newCV, int count);
-	void writeAttribNoTies(int stepn, const StepAttributes &stepAttrib) {// does not handle tied notes
+	void writeAttribNoTies(int stepn, const FoundryStepAttributes &stepAttrib) {// does not handle tied notes
 		attributes[seqIndexEdit][stepn] = stepAttrib;
 	}
 	
@@ -490,8 +490,8 @@ class SequencerKernel {
 
 struct SeqCPbuffer {
 	float cvCPbuffer[SequencerKernel::MAX_STEPS];// copy paste buffer for CVs
-	StepAttributes attribCPbuffer[SequencerKernel::MAX_STEPS];
-	SeqAttributes seqAttribCPbuffer;
+	FoundryStepAttributes attribCPbuffer[SequencerKernel::MAX_STEPS];
+	FoundrySeqAttributes seqAttribCPbuffer;
 	int storedLength;// number of steps that contain actual cp data
 	
 	SeqCPbuffer() {reset();}

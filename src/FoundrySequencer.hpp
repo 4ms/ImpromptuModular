@@ -62,12 +62,12 @@ class Sequencer {
 		return sek[trackIndexEdit].getCV(editingSequence);
 	}
 	float getCV(bool editingSequence, int stepn) {return sek[trackIndexEdit].getCVi(editingSequence, stepn);}
-	StepAttributes getAttribute(bool editingSequence) {
+	FoundryStepAttributes getAttribute(bool editingSequence) {
 		if (editingSequence)
 			return sek[trackIndexEdit].getAttribute(stepIndexEdit);
 		return sek[trackIndexEdit].getAttribute(editingSequence);
 	}
-	StepAttributes getAttribute(bool editingSequence, int stepn) {return sek[trackIndexEdit].getAttributei(editingSequence, stepn);}
+	FoundryStepAttributes getAttribute(bool editingSequence, int stepn) {return sek[trackIndexEdit].getAttributei(editingSequence, stepn);}
 	int keyIndexToGateTypeEx(int keyn) {return sek[trackIndexEdit].keyIndexToGateTypeEx(keyn);}
 	int getPulsesPerStep() {return sek[trackIndexEdit].getPulsesPerStep();}
 	int getDelay() {return sek[trackIndexEdit].getDelay();}
@@ -86,7 +86,7 @@ class Sequencer {
 	void setEditingGateKeyLight(int _editingGateKeyLight) {editingGateKeyLight = _editingGateKeyLight;}
 	void setStepIndexEdit(int _stepIndexEdit, int sampleRate) {
 		stepIndexEdit = _stepIndexEdit;
-		StepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
+		FoundryStepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
 		if (!stepAttrib.getTied()) {// play if non-tied step
 			editingGate[trackIndexEdit] = (unsigned long) (gateTime * sampleRate / RefreshCounter::displayRefreshStepSkips);
 			editingGateCV[trackIndexEdit] = sek[trackIndexEdit].getCV(stepIndexEdit);
@@ -141,7 +141,7 @@ class Sequencer {
 		sek[trackIndexEdit].writeCV(stepn, cvVal, 1);
 	}
 	void writeCV(int trkn, float cvVal, int multiStepsCount, float sampleRate, bool multiTracks);
-	void writeAttribNoTies(int stepn, const StepAttributes &stepAttrib) {// does not handle tied notes
+	void writeAttribNoTies(int stepn, const FoundryStepAttributes &stepAttrib) {// does not handle tied notes
 		sek[trackIndexEdit].writeAttribNoTies(stepn, stepAttrib);
 	}
 	void autostep(bool autoseq, bool autostepLen, bool multiTracks);

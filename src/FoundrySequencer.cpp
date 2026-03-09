@@ -164,29 +164,29 @@ bool Sequencer::setGateType(int keyn, int multiSteps, float sampleRate, bool aut
 
 
 void Sequencer::initSlideVal(int multiStepsCount, bool multiTracks) {
-	sek[trackIndexEdit].setSlideVal(stepIndexEdit, StepAttributes::INIT_SLIDE, multiStepsCount);
+	sek[trackIndexEdit].setSlideVal(stepIndexEdit, FoundryStepAttributes::INIT_SLIDE, multiStepsCount);
 	if (multiTracks) {
 		for (int i = 0; i < NUM_TRACKS; i++) {
 			if (i == trackIndexEdit) continue;
-			sek[i].setSlideVal(stepIndexEdit, StepAttributes::INIT_SLIDE, multiStepsCount);
+			sek[i].setSlideVal(stepIndexEdit, FoundryStepAttributes::INIT_SLIDE, multiStepsCount);
 		}
 	}		
 }
 void Sequencer::initGatePVal(int multiStepsCount, bool multiTracks) {
-	sek[trackIndexEdit].setGatePVal(stepIndexEdit, StepAttributes::INIT_PROB, multiStepsCount);
+	sek[trackIndexEdit].setGatePVal(stepIndexEdit, FoundryStepAttributes::INIT_PROB, multiStepsCount);
 	if (multiTracks) {
 		for (int i = 0; i < NUM_TRACKS; i++) {
 			if (i == trackIndexEdit) continue;
-			sek[i].setGatePVal(stepIndexEdit, StepAttributes::INIT_PROB, multiStepsCount);
+			sek[i].setGatePVal(stepIndexEdit, FoundryStepAttributes::INIT_PROB, multiStepsCount);
 		}
 	}		
 }
 void Sequencer::initVelocityVal(int multiStepsCount, bool multiTracks) {
-	sek[trackIndexEdit].setVelocityVal(stepIndexEdit, StepAttributes::INIT_VELOCITY, multiStepsCount);
+	sek[trackIndexEdit].setVelocityVal(stepIndexEdit, FoundryStepAttributes::INIT_VELOCITY, multiStepsCount);
 	if (multiTracks) {
 		for (int i = 0; i < NUM_TRACKS; i++) {
 			if (i == trackIndexEdit) continue;
-			sek[i].setVelocityVal(stepIndexEdit, StepAttributes::INIT_VELOCITY, multiStepsCount);
+			sek[i].setVelocityVal(stepIndexEdit, FoundryStepAttributes::INIT_VELOCITY, multiStepsCount);
 		}
 	}		
 }
@@ -307,7 +307,7 @@ void Sequencer::autostep(bool autoseq, bool autostepLen, bool multiTracks) {
 }	
 
 bool Sequencer::applyNewOctave(int octn, int multiSteps, float sampleRate, bool multiTracks) { // returns true if tied
-	StepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
+	FoundryStepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
 	if (stepAttrib.getTied())
 		return true;
 	editingGateCV[trackIndexEdit] = sek[trackIndexEdit].applyNewOctave(stepIndexEdit, octn, multiSteps);
@@ -324,7 +324,7 @@ bool Sequencer::applyNewOctave(int octn, int multiSteps, float sampleRate, bool 
 }
 bool Sequencer::applyNewKey(int keyn, int multiSteps, float sampleRate, bool autostepClick, bool multiTracks) { // returns true if tied
 	bool ret = false;
-	StepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
+	FoundryStepAttributes stepAttrib = sek[trackIndexEdit].getAttribute(stepIndexEdit);
 	if (stepAttrib.getTied()) {
 		if (autostepClick)
 			moveStepIndexEdit(1, false);
@@ -355,7 +355,7 @@ bool Sequencer::applyNewKey(int keyn, int multiSteps, float sampleRate, bool aut
 void Sequencer::moveStepIndexEditWithEditingGate(int delta, bool writeTrig, float sampleRate) {
 	moveStepIndexEdit(delta, false);
 	for (int trkn = 0; trkn < NUM_TRACKS; trkn++) {
-		StepAttributes stepAttrib = sek[trkn].getAttribute(stepIndexEdit);
+		FoundryStepAttributes stepAttrib = sek[trkn].getAttribute(stepIndexEdit);
 		if (!stepAttrib.getTied()) {// play if non-tied step
 			if (!writeTrig) {// in case autostep when simultaneous writeCV and stepCV (keep what was done in Write Input block above)
 				editingGate[trkn] = (unsigned long) (gateTime * sampleRate / RefreshCounter::displayRefreshStepSkips);
