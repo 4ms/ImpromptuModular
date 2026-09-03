@@ -44,13 +44,13 @@ void init(Plugin *p) {
 	p->addModel(modelVariations);
 	p->addModel(modelWriteSeq32);
 	p->addModel(modelWriteSeq64);
-#ifndef METAMODULE
-	p->addModel(modelBlankPanel);
 	p->addModel(modelChordKeyExpander);
 	p->addModel(modelClockedExpander);
 	p->addModel(modelFoundryExpander);
 	p->addModel(modelGateSeq64Expander);
 	p->addModel(modelPhraseSeqExpander);
+#ifndef METAMODULE
+	p->addModel(modelBlankPanel);
 #endif
 }
 
